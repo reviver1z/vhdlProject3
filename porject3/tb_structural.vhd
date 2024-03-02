@@ -1,0 +1,69 @@
+library ieee;
+use ieee.std_logic_1164.all;
+
+entity tb_my_mux is
+end tb_my_mux;
+
+architecture tb of tb_my_mux is
+
+    component my_mux
+        port (data_in_0 : in std_logic_vector (7 downto 0);
+              data_in_1 : in std_logic_vector (7 downto 0);
+              data_in_2 : in std_logic_vector (7 downto 0);
+              data_in_3 : in std_logic_vector (7 downto 0);
+              sel       : in std_logic_vector (1 downto 0);
+              mux_out   : out std_logic_vector (7 downto 0));
+    end component;
+
+    signal data_in_0 : std_logic_vector (7 downto 0);
+    signal data_in_1 : std_logic_vector (7 downto 0);
+    signal data_in_2 : std_logic_vector (7 downto 0);
+    signal data_in_3 : std_logic_vector (7 downto 0);
+    signal sel       : std_logic_vector (1 downto 0);
+    signal mux_out   : std_logic_vector (7 downto 0);
+
+    constant TbPeriod : time := 1000 ns; -- EDIT Put the right period here
+    signal TbClock : std_logic := '0';
+    signal TbSimEnded : boolean := false;
+
+begin
+
+    dut : my_mux
+    port map (data_in_0 => data_in_0,
+              data_in_1 => data_in_1,
+              data_in_2 => data_in_2,
+              data_in_3 => data_in_3,
+              sel       => sel,
+              mux_out   => mux_out);
+
+    -- Clock generation
+    TbClock <= not TbClock after TbPeriod/2 when not TbSimEnded else '0';
+
+    -- Replace YOURCLOCKSIGNAL below with the name of your clock signal
+    -- YOURCLOCKSIGNAL <= TbClock;
+
+    stimuli : process
+    begin
+        -- Initialize inputs
+        data_in_0 <= (others => '0');
+        data_in_1 <= (others => '0');
+        data_in_2 <= (others => '0');
+        data_in_3 <= (others => '0');
+        sel <= (others => '0');
+
+        -- Add stimuli here
+        wait for 100 * TbPeriod;
+
+        -- Stop the clock and hence terminate the simulation
+        TbSimEnded <= true;
+        wait;
+    end process;
+
+end tb;
+
+-- Configuration block below is required by some simulators. Usually no need to edit.
+
+configuration cfg_tb_my_mux of tb_my_mux is
+    for tb
+    end for;
+end cfg_tb_my_mux;
